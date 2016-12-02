@@ -19,11 +19,11 @@ if [[ -z ${1} ]]; then
 
   echo "Starting ServiceBus DB..."
   exec start-stop-daemon --start --chuid ${ZATO_USER}:${ZATO_USER} \
-    --exec ${ZATO_BINDIR}/zato create odb --odb_host ${DB_HOST} --odb_port ${DB_PORT} --odb_user ${DB_USER} --odb_db_name ${DB_NAME} --odb_password ${DB_PASS} postgresql
+    --exec ${ZATO_BINDIR}/zato -- create odb --odb_host ${DB_HOST} --odb_port ${DB_PORT} --odb_user ${DB_USER} --odb_db_name ${DB_NAME} --odb_password ${DB_PASS} postgresql
 
   echo "Starting ServiceBus Cluster..."
-  echo start-stop-daemon --start --chuid ${ZATO_USER}:${ZATO_USER} \
-    --exec ${ZATO_BINDIR}/zato create cluster --odb_host ${DB_HOST} --odb_port ${DB_PORT} --odb_user ${DB_USER} --odb_db_name ${DB_NAME} --odb_password ${DB_PASS} --tech_account_password ${ADMIN_PASS} postgresql ${LB_HOST} ${LB_PORT} ${LB_AGENT_PORT} ${BROKER_HOST} ${BROKER_PORT} ${CLUSTER_NAME} ${ADMIN_USER}
+  exec start-stop-daemon --start --chuid ${ZATO_USER}:${ZATO_USER} \
+    --exec ${ZATO_BINDIR}/zato -- create cluster --odb_host ${DB_HOST} --odb_port ${DB_PORT} --odb_user ${DB_USER} --odb_db_name ${DB_NAME} --odb_password ${DB_PASS} --tech_account_password ${ADMIN_PASS} postgresql ${LB_HOST} ${LB_PORT} ${LB_AGENT_PORT} ${BROKER_HOST} ${BROKER_PORT} ${CLUSTER_NAME} ${ADMIN_USER}
 
 else
   exec "$@"
