@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+source ${ZATO_APP_HOME}/env-defaults
+
+## Execute command as PG_USER
+exec_as_zato() {
+  sudo -HEu ${ZATO_USER} "$@"
+}
+
+map_uidgid() {
+  USERMAP_ORIG_UID=$(id -u ${ZATO_USER})
+  USERMAP_ORIG_GID=$(id -g ${ZATO_USER})
+  USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
+  USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
+  if [[ ${USERMAP_UID} != ${USERMAP_ORIG_UID} ]] || [[ ${USERMAP_GID} != ${USERMAP_ORIG_GID} ]]; then
+    echo "Adapting uid and gid for ${ZATO_USER}:${ZATO_USER} to $USERMAP_UID:$USERMAP_GID"
+    groupmod -o -g ${USERMAP_GID} ${ZATO_USER}
+    sed -i -e "s|:${USERMAP_ORIG_UID}:${USERMAP_GID}:|:${USERMAP_UID}:${USERMAP_GID}:|" /etc/passwd
+  fi
+}
