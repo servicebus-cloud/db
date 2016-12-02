@@ -34,5 +34,5 @@ RUN wget -P /opt/zato \
 
 RUN chmod 755 /opt/zato/zato_from_config_create_odb /opt/zato/zato_from_config_create_cluster
 
-RUN /opt/zato/zato_from_config_create_odb
-RUN /opt/zato/zato_from_config_create_cluster
+ENV INITDB true
+RUN if [ "${INITDB}" = "true" ]; then /opt/zato/zato_from_config_create_odb; /opt/zato/zato_from_config_create_cluster; fi
